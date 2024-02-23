@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34525.116
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pri.Api.Music.Web", "Pri.Api.Music.Web\Pri.Api.Music.Web.csproj", "{75B058D7-C3BA-4D73-87F8-66AD9C0212AE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pri.Api.Music.Web", "Pri.Api.Music.Web\Pri.Api.Music.Web.csproj", "{75B058D7-C3BA-4D73-87F8-66AD9C0212AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pri.Api.Music.Core", "Pri.Api.Music.Core\Pri.Api.Music.Core.csproj", "{61D2A538-9202-443C-939D-6DE62081CEF8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pri.Api.Music.Core", "Pri.Api.Music.Core\Pri.Api.Music.Core.csproj", "{61D2A538-9202-443C-939D-6DE62081CEF8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pri.Api.Music.Infrastructure", "Pri.Api.Music.Infrastructure\Pri.Api.Music.Infrastructure.csproj", "{907DBBD3-0E3A-49D1-AEF1-DBC4D3F8EAD1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pri.Api.Music.Infrastructure", "Pri.Api.Music.Infrastructure\Pri.Api.Music.Infrastructure.csproj", "{907DBBD3-0E3A-49D1-AEF1-DBC4D3F8EAD1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pri.Api.Music.Api", "Pri.Api.Music.Api\Pri.Api.Music.Api.csproj", "{665DABB8-0522-4118-96F4-2A1025775070}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{907DBBD3-0E3A-49D1-AEF1-DBC4D3F8EAD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{907DBBD3-0E3A-49D1-AEF1-DBC4D3F8EAD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{907DBBD3-0E3A-49D1-AEF1-DBC4D3F8EAD1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{665DABB8-0522-4118-96F4-2A1025775070}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{665DABB8-0522-4118-96F4-2A1025775070}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{665DABB8-0522-4118-96F4-2A1025775070}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{665DABB8-0522-4118-96F4-2A1025775070}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
