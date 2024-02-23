@@ -1,0 +1,16 @@
+﻿@model RecordsDetailViewModel
+
+<div class="row">
+    <div class="col col-lg-4 mx-auto">
+        <div class="card" style="width: 18rem;">
+            <img src="/img/record.jpg" class="card-img-top" alt="@Model.Title">
+            <div class="card-body">
+                <h5 class="card-title">@Model.Title</h5>
+                <h6 class="card-subtitle mb-2 text-muted">@Model.Artist</h6>
+                <h6 class="card-subtitle mb-2 text-muted">@Model.Genre</h6>
+                <a asp-controller="Records" asp-action="Index" class="btn btn-primary">Back</a>
+            </div>
+        </div>
+    </div>
+</div>
+
