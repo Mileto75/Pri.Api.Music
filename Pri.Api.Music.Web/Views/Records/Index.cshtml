@@ -1,0 +1,31 @@
+﻿@model RecordsIndexViewModel
+
+<div class="row">
+    <div class="col col-lg-6 mx-auto">
+        <a asp-action="Create" class="btn btn-outline-info">Create</a>
+        <table class="table table-responsive table-hover">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Genre</th>
+                    <th>Artist</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var record in Model.Records)
+                { 
+                    <tr>
+                        <td>@record.Title</td>
+                        <td>@record.Genre</td>
+                        <td>@record.Artist</td>
+                        <td><a asp-controller="Records"
+                               asp-action="Detail"
+                               asp-route-id="@record.Id"
+                               class="btn btn-outline-info">Info</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
