@@ -40,44 +40,6 @@ namespace Pri.Api.Music.Api.Controllers
             }
             return NotFound(result.Errors);
         }
-        [HttpPost("WithImage")]
-        public async Task<IActionResult> CreateWithImage([FromForm]RecordRequestWithImageDto recordRequestWithImageDto)
-        {
-            if(recordRequestWithImageDto != null)
-            {
-                var filename = $"{Guid.NewGuid()}_{recordRequestWithImageDto.Image.FileName}";
-                var imagesPath = Path.Combine(_webHostEnvironment.ContentRootPath,"wwwroot","images");
-                if (!Directory.Exists(imagesPath))
-                {
-                    Directory.CreateDirectory(imagesPath);
-                }
-                var completePath = Path.Combine(imagesPath, filename);
-                using(FileStream fileStream = new FileStream(completePath,FileMode.Create))
-                {
-                    await recordRequestWithImageDto.Image.CopyToAsync(fileStream);
-                }
-                var result = await _recordService
-                    .CreateRecordAsync(new RecordCreateRequestModel
-                    {
-                        ImageFileName = filename,
-                        Title = recordRequestWithImageDto.Title,
-                        Price = recordRequestWithImageDto.Price,
-                        GenreId = recordRequestWithImageDto.GenreId,
-                        ArtistId = recordRequestWithImageDto.ArtistId,
-                        PropertyIds = recordRequestWithImageDto.PropertyIds,
-                    });
-                if(!result.IsSucces)
-                {
-                    foreach(var error in result.Errors)
-                    {
-                        ModelState.AddModelError("", error);
-                    }
-                    return BadRequest(ModelState.Values);
-                }
-                return CreatedAtAction(nameof(Get), new { id = result.Value.Id }, result.Value);
-            }
-            return Ok();
-        }
         [HttpPost]
         public async Task<IActionResult> Add([FromBody] RecordRequestDto recordRequestDto)
         {

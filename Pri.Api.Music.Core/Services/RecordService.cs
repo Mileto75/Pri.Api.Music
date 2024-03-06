@@ -13,7 +13,7 @@ using System.Xml.Linq;
 
 namespace Pri.CleanArchitecture.Music.Core.Services
 {
-    public class RecordService: IRecordService
+    public class RecordService : IRecordService
     {
         private readonly IRecordRepository _recordRepository;
         private readonly IGenreRepository _genreRepository;
@@ -31,7 +31,7 @@ namespace Pri.CleanArchitecture.Music.Core.Services
         public async Task<ResultModel<Record>> CreateRecordAsync(RecordCreateRequestModel recordCreateRequestModel)
         {
             //check if genreId exists
-            if(await _genreRepository.GetAll().AnyAsync(g => g.Id == recordCreateRequestModel.GenreId) == false)
+            if (await _genreRepository.GetAll().AnyAsync(g => g.Id == recordCreateRequestModel.GenreId) == false)
             {
                 return new ResultModel<Record>
                 {
@@ -40,8 +40,8 @@ namespace Pri.CleanArchitecture.Music.Core.Services
                 };
             }
             //check if artistId exists
-            if(await _artistRepository.GetAll().AnyAsync(a => a.Id == recordCreateRequestModel.ArtistId)
-            == false) 
+            if (await _artistRepository.GetAll().AnyAsync(a => a.Id == recordCreateRequestModel.ArtistId)
+            == false)
             {
                 return new ResultModel<Record>
                 {
@@ -50,18 +50,14 @@ namespace Pri.CleanArchitecture.Music.Core.Services
                 };
             }
             //check if properties exist
-            foreach(var propertyId in recordCreateRequestModel.PropertyIds)
+            if (_propertyRepository.GetAll().Where(p => recordCreateRequestModel.PropertyIds.Contains(p.Id)).Count() != recordCreateRequestModel.PropertyIds.Distinct().Count())
             {
-                if(_propertyRepository.GetAll().Where(p => recordCreateRequestModel.PropertyIds.Contains(p.Id)).Count() != recordCreateRequestModel.PropertyIds.Count())
+                return new ResultModel<Record>
                 {
-                    return new ResultModel<Record>
-                    {
-                        IsSucces = false,
-                        Errors = new List<string> { "Property does not exist!" }
-                    };
-                }
+                    IsSucces = false,
+                    Errors = new List<string> { "Property does not exist!" }
+                };
             }
-                
             //create new record
             var record = new Record
             {
@@ -74,13 +70,13 @@ namespace Pri.CleanArchitecture.Music.Core.Services
             //call the repo
             var result = await _recordRepository.AddAsync(record);
             //check  result
-            if(result)
+            if (result)
             {
                 var createdRecord = await GetByIdAsync(record.Id);
                 return new ResultModel<Record>
                 {
                     IsSucces = true,
-                    Value =  createdRecord.Value,
+                    Value = createdRecord.Value,
                 };
             }
             return new ResultModel<Record>
@@ -93,7 +89,7 @@ namespace Pri.CleanArchitecture.Music.Core.Services
         public async Task<ResultModel<Record>> DeleteRecordAsync(int id)
         {
             var record = await _recordRepository.GetByIdAsync(id);
-            if(record == null)
+            if (record == null)
             {
                 return new ResultModel<Record>
                 {
@@ -101,7 +97,7 @@ namespace Pri.CleanArchitecture.Music.Core.Services
                     Errors = new List<string> { "Record does not exist!" }
                 };
             }
-            if(await _recordRepository.DeleteAsync(record))
+            if (await _recordRepository.DeleteAsync(record))
             {
                 return new ResultModel<Record> { IsSucces = true };
             }
@@ -118,7 +114,7 @@ namespace Pri.CleanArchitecture.Music.Core.Services
             var records = await _recordRepository.GetAllAsync();
             //check if count > 0
             var recordResultModel = new ResultModel<IEnumerable<Record>>();
-            if (records.Count() > 0) 
+            if (records.Count() > 0)
             {
                 recordResultModel.Value = records;
                 recordResultModel.IsSucces = true;
@@ -134,12 +130,12 @@ namespace Pri.CleanArchitecture.Music.Core.Services
             var record = await _recordRepository.GetByIdAsync(id);
             var recordresultModel = new ResultModel<Record>();
             //check if exists
-            if(record == null)
+            if (record == null)
             {
                 recordresultModel.Errors = new List<string> { "Record not found!" };
                 return recordresultModel;
             }
-            recordresultModel.Value =  record ;
+            recordresultModel.Value = record;
             recordresultModel.IsSucces = true;
             return recordresultModel;
         }
@@ -147,7 +143,7 @@ namespace Pri.CleanArchitecture.Music.Core.Services
         public async Task<ResultModel<IEnumerable<Record>>> GetRecordsByGenreIdAsync(int genreId)
         {
             var records = await _recordRepository.GetRecordsByGenreIdAsync(genreId);
-            if(records.Count() > 0)
+            if (records.Count() > 0)
             {
                 return new ResultModel<IEnumerable<Record>>
                 {
@@ -253,7 +249,7 @@ namespace Pri.CleanArchitecture.Music.Core.Services
             }
             //check if record exists
             var record = await _recordRepository.GetByIdAsync(recordUpdateRequestModel.Id);
-            if(record == null)
+            if (record == null)
             {
                 return new ResultModel<Record>
                 {
@@ -266,7 +262,7 @@ namespace Pri.CleanArchitecture.Music.Core.Services
             record.GenreId = recordUpdateRequestModel.GenreId;
             record.ArtistId = recordUpdateRequestModel.ArtistId;
             record.Price = recordUpdateRequestModel.Price;
-            if(await  _recordRepository.UpdateAsync(record))
+            if (await _recordRepository.UpdateAsync(record))
             {
                 return new ResultModel<Record>
                 {
