@@ -49,15 +49,6 @@ namespace Pri.CleanArchitecture.Music.Core.Services
                     Errors = new List<string> { "Artist does not exist!" }
                 };
             }
-            //check if properties exist
-            if (_propertyRepository.GetAll().Where(p => recordCreateRequestModel.PropertyIds.Contains(p.Id)).Count() != recordCreateRequestModel.PropertyIds.Distinct().Count())
-            {
-                return new ResultModel<Record>
-                {
-                    IsSucces = false,
-                    Errors = new List<string> { "Property does not exist!" }
-                };
-            }
             //create new record
             var record = new Record
             {
@@ -65,8 +56,21 @@ namespace Pri.CleanArchitecture.Music.Core.Services
                 GenreId = recordCreateRequestModel.GenreId,
                 ArtistId = recordCreateRequestModel.ArtistId,
                 Price = recordCreateRequestModel.Price,
-                Image = recordCreateRequestModel.ImageFileName,
             };
+            //check if properties are present
+            if (recordCreateRequestModel.PropertyIds != null)
+            {
+                //check if properties exist in database
+                if (_propertyRepository.GetAll().Where(p => recordCreateRequestModel.PropertyIds.Contains(p.Id)).Count() != recordCreateRequestModel.PropertyIds.Distinct().Count())
+                {
+                    return new ResultModel<Record>
+                    {
+                        IsSucces = false,
+                        Errors = new List<string> { "Property does not exist!" }
+                    };
+                }
+                record.Properties = await _propertyRepository.GetAll().Where(pr => recordCreateRequestModel.PropertyIds.Contains(pr.Id)).ToListAsync();
+            }
             //call the repo
             var result = await _recordRepository.AddAsync(record);
             //check  result

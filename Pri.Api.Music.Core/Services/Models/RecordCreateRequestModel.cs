@@ -13,6 +13,5 @@ namespace Pri.CleanArchitecture.Music.Core.Services.Models
         public int ArtistId{ get; set; }
         public decimal Price { get; set; }
         public IEnumerable<int> PropertyIds{ get; set; }
-        public string ImageFileName { get; set; }
     }
 }
