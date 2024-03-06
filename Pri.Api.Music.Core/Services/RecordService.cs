@@ -69,6 +69,7 @@ namespace Pri.CleanArchitecture.Music.Core.Services
                 GenreId = recordCreateRequestModel.GenreId,
                 ArtistId = recordCreateRequestModel.ArtistId,
                 Price = recordCreateRequestModel.Price,
+                Image = recordCreateRequestModel.ImageFileName,
             };
             //call the repo
             var result = await _recordRepository.AddAsync(record);

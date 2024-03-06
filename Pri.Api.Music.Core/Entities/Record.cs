@@ -14,6 +14,7 @@ namespace Pri.CleanArchitecture.Music.Core.Entities
         public Artist Artist { get; set; }
         public int? ArtistId { get; set; }
         public decimal Price { get; set; }
+        public string Image { get; set; }
         public ICollection<Property> Properties { get; set; }
     }
 }
