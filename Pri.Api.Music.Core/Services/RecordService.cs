@@ -293,6 +293,8 @@ namespace Pri.CleanArchitecture.Music.Core.Services
         }
         public async Task<bool> CheckIfExistsAsync(int id)
         {
+            //als alternatief kan je gebruik maken van de IQueryable methode
+            //om in een serviceclass een check te doen 
             //return await _recordRepository.GetAll().AnyAsync(t => t.Id == id);
             return await _recordRepository.CheckIfExistsAsync(id);
         }
