@@ -14,11 +14,13 @@ namespace Pri.Api.Music.Api.Controllers
     {
         private readonly IRecordService _recordService;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly ILogger<RecordsController> _logger;
 
-        public RecordsController(IRecordService recordService, IWebHostEnvironment webHostEnvironment)
+        public RecordsController(IRecordService recordService, IWebHostEnvironment webHostEnvironment, ILogger<RecordsController> logger)
         {
             _recordService = recordService;
             _webHostEnvironment = webHostEnvironment;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -92,10 +94,24 @@ namespace Pri.Api.Music.Api.Controllers
             }
             return BadRequest(ModelState.Values);
         }
-        [HttpDelete]
-        public IActionResult Delete(int id)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
         {
-            return Ok();
+            //check if exists
+            if(!await _recordService.CheckIfExistsAsync (id))
+            {
+                return NotFound("Record not found");
+            }
+            var result = await _recordService.DeleteRecordAsync(id);
+            if(result.IsSucces)
+            {
+                return Ok("Product deleted!");
+            }
+            foreach(var error in result.Errors)
+            {
+                ModelState.AddModelError("", error);
+            }
+            return BadRequest(ModelState.Values);
         }
         //implement SearchByArtist
         [HttpGet("Search/ByArtistName/{name}")]
@@ -135,6 +151,63 @@ namespace Pri.Api.Music.Api.Controllers
                 return Ok(result.Value.MapToDto());
             }
             return Ok(result.Errors);
+        }
+        [HttpPost("Image")]
+        public async Task<IActionResult> CreateWithImage([FromForm]RecordCreateWithImageRequestDto
+            recordCreateWithImageRequestDto)
+        {
+            //unique filename
+            var filename 
+                = $"{Guid.NewGuid()}_{recordCreateWithImageRequestDto.Image.FileName}";
+            //filepath
+            var pathToImages = Path.Combine(_webHostEnvironment.WebRootPath, "images", "records");
+            if(!Directory.Exists(pathToImages))
+            {
+                Directory.CreateDirectory(pathToImages);
+            }
+            //create path to file
+            var pathToFile = Path.Combine(pathToImages, filename);
+            //copy to location
+            using (FileStream filestream = new FileStream(pathToFile, FileMode.Create))
+            {
+                try
+                {
+                    await recordCreateWithImageRequestDto.Image.CopyToAsync(filestream);
+                }
+                catch (FileNotFoundException fileNotFoundException)
+                {
+                    //log the error
+                    _logger.LogError(fileNotFoundException.Message);
+                    Response.StatusCode = 500;
+                    return Content("File not found!");
+                }
+            }
+            var result = await _recordService
+                .CreateRecordAsync(new RecordCreateRequestModel
+                {
+                    Title = recordCreateWithImageRequestDto.Title,
+                    GenreId = recordCreateWithImageRequestDto.GenreId,
+                    ArtistId = recordCreateWithImageRequestDto.ArtistId,
+                    PropertyIds = recordCreateWithImageRequestDto.PropertyIds,
+                    Price = recordCreateWithImageRequestDto.Price,
+                    Image = filename
+                });
+            //create(filename in db)
+            if(result.IsSucces)
+            {
+                return 
+                    CreatedAtAction(nameof(Get), new { Id = result.Value.Id }
+                    , result.Value.MapToDto());
+            }
+            foreach(var error in result.Errors)
+            {
+                ModelState.AddModelError("", error);
+            }
+            return BadRequest(ModelState.Values);
+        }
+        private string StoreFile(IFormFile file)
+        {
+            //generic
         }
     }
 }

@@ -56,6 +56,7 @@ namespace Pri.CleanArchitecture.Music.Core.Services
                 GenreId = recordCreateRequestModel.GenreId,
                 ArtistId = recordCreateRequestModel.ArtistId,
                 Price = recordCreateRequestModel.Price,
+                Image = recordCreateRequestModel.Image,
             };
             //check if properties are present
             if (recordCreateRequestModel.PropertyIds != null)
