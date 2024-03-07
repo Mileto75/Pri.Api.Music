@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Pri.Api.Music.Api.Dtos;
 using Pri.Api.Music.Api.Extensions;
+using Pri.CleanArchitecture.Music.Core.Entities;
 using Pri.CleanArchitecture.Music.Core.Interfaces.Services;
 using Pri.CleanArchitecture.Music.Core.Services.Models;
 using System.Xml.Linq;
@@ -156,31 +157,10 @@ namespace Pri.Api.Music.Api.Controllers
         public async Task<IActionResult> CreateWithImage([FromForm]RecordCreateWithImageRequestDto
             recordCreateWithImageRequestDto)
         {
-            //unique filename
-            var filename 
-                = $"{Guid.NewGuid()}_{recordCreateWithImageRequestDto.Image.FileName}";
-            //filepath
-            var pathToImages = Path.Combine(_webHostEnvironment.WebRootPath, "images", "records");
-            if(!Directory.Exists(pathToImages))
+            var filename = "";
+            if (recordCreateWithImageRequestDto.Image != null)
             {
-                Directory.CreateDirectory(pathToImages);
-            }
-            //create path to file
-            var pathToFile = Path.Combine(pathToImages, filename);
-            //copy to location
-            using (FileStream filestream = new FileStream(pathToFile, FileMode.Create))
-            {
-                try
-                {
-                    await recordCreateWithImageRequestDto.Image.CopyToAsync(filestream);
-                }
-                catch (FileNotFoundException fileNotFoundException)
-                {
-                    //log the error
-                    _logger.LogError(fileNotFoundException.Message);
-                    Response.StatusCode = 500;
-                    return Content("File not found!");
-                }
+                filename = await StoreFile<Record>(recordCreateWithImageRequestDto.Image);
             }
             var result = await _recordService
                 .CreateRecordAsync(new RecordCreateRequestModel
@@ -190,8 +170,9 @@ namespace Pri.Api.Music.Api.Controllers
                     ArtistId = recordCreateWithImageRequestDto.ArtistId,
                     PropertyIds = recordCreateWithImageRequestDto.PropertyIds,
                     Price = recordCreateWithImageRequestDto.Price,
-                    Image = filename
+                    Image = filename,
                 });
+            
             //create(filename in db)
             if(result.IsSucces)
             {
@@ -205,9 +186,37 @@ namespace Pri.Api.Music.Api.Controllers
             }
             return BadRequest(ModelState.Values);
         }
-        private string StoreFile(IFormFile file)
+        private async Task<string> StoreFile<T>(IFormFile file)
         {
             //generic
+            //unique filename
+            var filename
+                = $"{Guid.NewGuid()}_{file.FileName}";
+            //filepath
+            var pathToImages 
+                = Path.Combine(_webHostEnvironment.WebRootPath, "images", nameof(T));
+            if (!Directory.Exists(pathToImages))
+            {
+                Directory.CreateDirectory(pathToImages);
+            }
+            //create path to file
+            var pathToFile = Path.Combine(pathToImages, filename);
+            //copy to location
+            using (FileStream filestream = new FileStream(pathToFile, FileMode.Create))
+            {
+                try
+                {
+                    await file.CopyToAsync(filestream);
+                }
+                catch (FileNotFoundException fileNotFoundException)
+                {
+                    //log the error
+                    _logger.LogError(fileNotFoundException.Message);
+                    Response.StatusCode = 500;
+                    return "";
+                }
+            }
+            return filename;
         }
     }
 }
