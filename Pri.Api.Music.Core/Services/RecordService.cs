@@ -253,21 +253,30 @@ namespace Pri.CleanArchitecture.Music.Core.Services
                     Errors = new List<string> { "Artist does not exist!" }
                 };
             }
-            //check if record exists
-            var record = await _recordRepository.GetByIdAsync(recordUpdateRequestModel.Id);
-            if (record == null)
+            //check if properties are present
+            if (recordUpdateRequestModel.PropertyIds != null)
             {
-                return new ResultModel<Record>
+                //check if properties exist in database
+                if (_propertyRepository.GetAll()
+                    .Where(p => recordUpdateRequestModel.PropertyIds.Contains(p.Id)).Count()
+                    != recordUpdateRequestModel.PropertyIds.Distinct().Count())
                 {
-                    IsSucces = false,
-                    Errors = new List<string> { "Record not found" }
-                };
+                    return new ResultModel<Record>
+                    {
+                        IsSucces = false,
+                        Errors = new List<string> { "Property does not exist!" }
+                    };
+                }
             }
+            //get the record
+            var record = await _recordRepository.GetByIdAsync(recordUpdateRequestModel.Id);
             //update
             record.Title = recordUpdateRequestModel.Title;
             record.GenreId = recordUpdateRequestModel.GenreId;
             record.ArtistId = recordUpdateRequestModel.ArtistId;
             record.Price = recordUpdateRequestModel.Price;
+            record.Properties = await _propertyRepository.GetAll()
+                .Where(pr => recordUpdateRequestModel.PropertyIds.Contains(pr.Id)).ToListAsync();
             if (await _recordRepository.UpdateAsync(record))
             {
                 return new ResultModel<Record>
@@ -281,6 +290,11 @@ namespace Pri.CleanArchitecture.Music.Core.Services
                 IsSucces = false,
                 Errors = new List<string> { "Record update failed!" }
             };
+        }
+        public async Task<bool> CheckIfExistsAsync(int id)
+        {
+            //return await _recordRepository.GetAll().AnyAsync(t => t.Id == id);
+            return await _recordRepository.CheckIfExistsAsync(id);
         }
     }
 }

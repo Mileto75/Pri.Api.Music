@@ -64,10 +64,33 @@ namespace Pri.Api.Music.Api.Controllers
             return BadRequest(ModelState.Values);
         }
         [HttpPut]
-        public IActionResult Update(int id)
+        public async Task<IActionResult> Update(RecordUpdateRequestDto recordUpdateRequestDto)
         {
-            
-            return Ok();
+            if (!await _recordService.CheckIfExistsAsync(recordUpdateRequestDto.Id))
+            {
+                return NotFound("Record not found!");
+            }
+            var result = await _recordService.UpdateRecordAsync
+                (
+                    new RecordUpdateRequestModel 
+                    {
+                        Id = recordUpdateRequestDto.Id,
+                        Title = recordUpdateRequestDto.Title,
+                        Price= recordUpdateRequestDto.Price,
+                        PropertyIds= recordUpdateRequestDto.PropertyIds,
+                        ArtistId= recordUpdateRequestDto.ArtistId,
+                        GenreId = recordUpdateRequestDto.GenreId,
+                    }
+                );
+            if (result.IsSucces)
+            {
+                return Ok();
+            }
+            foreach(var error in result.Errors)
+            {
+                ModelState.AddModelError("", error);
+            }
+            return BadRequest(ModelState.Values);
         }
         [HttpDelete]
         public IActionResult Delete(int id)
@@ -86,7 +109,6 @@ namespace Pri.Api.Music.Api.Controllers
             if(result.IsSucces)
             {
                 return Ok(result.Value.MapToDto());
-                
             }
             return Ok(result.Errors);
         }

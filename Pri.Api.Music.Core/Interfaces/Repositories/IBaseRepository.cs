@@ -15,5 +15,6 @@ namespace Pri.CleanArchitecture.Music.Core.Interfaces.Repositories
         Task<bool> AddAsync(T toAdd);
         Task<bool> DeleteAsync(T toDelete);
         Task<bool> UpdateAsync(T toUpdate);
+        Task<bool> CheckIfExistsAsync(int id);
     }
 }

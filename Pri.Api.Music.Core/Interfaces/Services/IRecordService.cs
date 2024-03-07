@@ -2,6 +2,7 @@
 using Pri.CleanArchitecture.Music.Core.Services.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,5 +20,6 @@ namespace Pri.CleanArchitecture.Music.Core.Interfaces.Services
         Task<ResultModel<Record>> CreateRecordAsync(RecordCreateRequestModel recordCreateRequestModel);
         Task<ResultModel<Record>> UpdateRecordAsync(RecordUpdateRequestModel recordUpdateRequestModel);
         Task<ResultModel<Record>> DeleteRecordAsync(int id);
+        Task<bool> CheckIfExistsAsync(int id);
     }
 }

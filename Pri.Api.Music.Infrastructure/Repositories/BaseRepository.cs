@@ -73,5 +73,10 @@ namespace Pri.CleanArchitecture.Music.Infrastructure.Repositories
                 return false;
             }
         }
+
+        public async Task<bool> CheckIfExistsAsync(int id)
+        {
+            return await _table.AnyAsync(t => t.Id == id);
+        }
     }
 }
