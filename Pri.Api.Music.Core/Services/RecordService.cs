@@ -61,7 +61,9 @@ namespace Pri.CleanArchitecture.Music.Core.Services
             if (recordCreateRequestModel.PropertyIds != null)
             {
                 //check if properties exist in database
-                if (_propertyRepository.GetAll().Where(p => recordCreateRequestModel.PropertyIds.Contains(p.Id)).Count() != recordCreateRequestModel.PropertyIds.Distinct().Count())
+                if (_propertyRepository.GetAll()
+                    .Where(p => recordCreateRequestModel.PropertyIds.Contains(p.Id)).Count() 
+                    != recordCreateRequestModel.PropertyIds.Distinct().Count())
                 {
                     return new ResultModel<Record>
                     {

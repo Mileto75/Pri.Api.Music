@@ -14,4 +14,8 @@
     <ProjectReference Include="..\Pri.Api.Music.Infrastructure\Pri.Api.Music.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
 </Project>

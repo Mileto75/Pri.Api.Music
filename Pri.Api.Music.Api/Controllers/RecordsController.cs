@@ -41,7 +41,7 @@ namespace Pri.Api.Music.Api.Controllers
             return NotFound(result.Errors);
         }
         [HttpPost]
-        public async Task<IActionResult> Add([FromBody] RecordRequestDto recordRequestDto)
+        public async Task<IActionResult> Add(RecordRequestDto recordRequestDto)
         {
             var result = await _recordService.CreateRecordAsync(
                 new RecordCreateRequestModel
@@ -66,6 +66,7 @@ namespace Pri.Api.Music.Api.Controllers
         [HttpPut]
         public IActionResult Update(int id)
         {
+            
             return Ok();
         }
         [HttpDelete]
